@@ -1,0 +1,26 @@
+{
+  "name": "ai-search-full-text-search-quickstart",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node dist/full-text-search.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc",
+    "prettier:fix": "prettier --write \"src/**/*.ts\""
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@azure/identity": "^4.3.0",
+    "@azure/search-documents": "^12.1.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.2",
+    "typescript": "^5.4.3"
+  },
+  "prettier": {
+    "printWidth": 80
+  }
+}
