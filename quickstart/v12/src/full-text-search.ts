@@ -24,11 +24,6 @@ const apiKey = process.env.SEARCH_API_KEY || "";
 
 // Importing the index definition and sample data
 import hotelData from './hotels.json';
-import indexDefinition from './hotels_quickstart_index.json';
-if (!hotelData || !indexDefinition) {
-    throw new Error("Make sure to set valid values for hotelData and indexDefinition.");
-}
-
 interface Hotel {
     HotelId: string;
     HotelName: string;
@@ -46,13 +41,14 @@ interface Hotel {
         PostalCode: string;
     };
 };
+const hotels: Hotel[] = hotelData["value"];
 
+import indexDefinition from './hotels_quickstart_index.json';
 interface HotelIndexDefinition {
     name: string;
     fields: SimpleField[] | ComplexField[];
     suggesters: SearchSuggester[];
 };
-const hotels: Hotel[] = hotelData["value"];
 const hotelIndexDefinition: HotelIndexDefinition = indexDefinition as HotelIndexDefinition;
 
 async function main(): Promise<void> {
@@ -79,7 +75,10 @@ async function main(): Promise<void> {
     const searchClient = indexClient.getSearchClient<Hotel>(indexName);
 
     // Load the data
-    await loadData(searchClient, hotels);
+    console.log("Uploading documents...");
+    const indexDocumentsResult = await searchClient.mergeOrUploadDocuments(hotels);
+
+    console.log(`Index operations succeeded: ${JSON.stringify(indexDocumentsResult.results[0].succeeded)}`);
 
     // waiting one second for indexing to complete (for demo purposes only)
     await sleep(1000);
@@ -96,21 +95,6 @@ async function main(): Promise<void> {
     await sendQueries(searchClient);
 }
 
-async function loadData(
-    searchClient: SearchClient<Hotel>,
-    hotels: Hotel[],
-): Promise<void> {
-    console.log("Uploading documents...");
-
-    const indexDocumentsResult = await searchClient.mergeOrUploadDocuments(hotels);
-
-    console.log(JSON.stringify(indexDocumentsResult));
-
-    console.log(
-        `Index operations succeeded: ${JSON.stringify(indexDocumentsResult.results[0].succeeded)}`,
-    );
-}
-
 async function deleteIndexIfExists(indexClient: SearchIndexClient, indexName: string): Promise<void> {
     try {
         await indexClient.deleteIndex(indexName);
@@ -120,7 +104,9 @@ async function deleteIndexIfExists(indexClient: SearchIndexClient, indexName: st
     }
 }
 
-async function sendQueries(searchClient: SearchClient<Hotel>): Promise<void> {
+async function sendQueries(
+    searchClient: SearchClient<Hotel>
+): Promise<void> {
 
     // Query 1
     console.log('Query #1 - search everything:');
