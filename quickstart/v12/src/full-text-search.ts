@@ -18,6 +18,10 @@ import {
 import dotenv from 'dotenv';
 dotenv.config();
 
+// Getting endpoint and apiKey from .env file
+const endpoint = process.env.SEARCH_API_ENDPOINT || "";
+const apiKey = process.env.SEARCH_API_KEY || "";
+
 // Importing the index definition and sample data
 import hotelData from './hotels.json';
 import indexDefinition from './hotels_quickstart_index.json';
@@ -50,10 +54,6 @@ interface HotelIndexDefinition {
 };
 const hotels: Hotel[] = hotelData["value"];
 const hotelIndexDefinition: HotelIndexDefinition = indexDefinition as HotelIndexDefinition;
-
-// Getting endpoint and apiKey from .env file
-const endpoint = process.env.SEARCH_API_ENDPOINT || "";
-const apiKey = process.env.SEARCH_API_KEY || "";
 
 async function main(): Promise<void> {
     console.log(`Running Azure AI Search Javascript quickstart...`);
